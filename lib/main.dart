@@ -1,6 +1,8 @@
+import 'package:first_app/result.dart';
 import 'package:flutter/material.dart';
-import './questions.dart';
-import './answer.dart';
+// import 'package:first_app/quiz.dart'; same as below
+import './quiz.dart';
+import './result.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,7 +14,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   // _ means private
   var _questionIndex = 0;
-  var questions = [
+
+  // static const _questions = [ // same as below (unmodifiable list that cannot change)
+  final _questions = const [
     {
       "questionText": "What's your favorite color?",
       "answers": ["Black", "Green", "Blue", "Red"]
@@ -35,21 +39,15 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: Text('My First App'),
         ),
-        body: Column(
-          children: [
-            Question(questions[_questionIndex]["questionText"]),
-            ...createAnswerWidgets()
-          ]
-        ),
+        body: _questionIndex < _questions.length
+            ? Quiz(
+                answerQuestion: _answerQuestion,
+                questions: _questions,
+                questionIndex: _questionIndex,
+              )
+            : Result(),
       ),
     );
-  }
-
-  List<Answer> createAnswerWidgets() {
-    return (questions[_questionIndex]["answers"] as List<String>).map((answer)
-          {
-            return Answer(answer, _answerQuestion);
-          }).toList();
   }
 
   void _answerQuestion() {
